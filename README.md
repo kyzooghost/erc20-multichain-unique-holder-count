@@ -6,6 +6,6 @@ This script can be easily adapted to count unique token holders for any ERC20 ac
 
 # How to use
 
-1. 'git clone' and 'npm install' this repo
+1. `git clone` and `npm install` this repo
 2. Set up environment variables as per .env.example
 3. `node index`
