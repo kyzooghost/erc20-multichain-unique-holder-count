@@ -14,23 +14,35 @@ const mainnetContract = new ethers.Contract(TOKEN_ADDRESS, ERC20_ABI, mainnetPro
 const polygonContract = new ethers.Contract(TOKEN_ADDRESS, ERC20_ABI, polygonProvider);
 const auroraContract = new ethers.Contract(TOKEN_ADDRESS, ERC20_ABI, auroraProvider);
 
-(async () => {
-    let mainnetHoldersMap = await getHoldersMapping(mainnetContract)
-    let polygonHoldersMap = await getHoldersMapping(polygonContract)
-    let auroraHoldersMap = await getHoldersMapping(auroraContract)
-    // console.log(mainnetHoldersMap.size)
-    // console.log(polygonHoldersMap.size)
-    // console.log(auroraHoldersMap.size)
+const startTime = new Date()
+
+main()
+    .then((resp) => {
+        console.log(resp)
+        console.log("SUCCEED IN", (new Date() - startTime) / 1000 )
+    })
+    .catch((e) => {
+        console.log("FAILED IN", (new Date() - startTime) / 1000 )
+        console.error(e)
+    })
+
+async function main() {
+    const [mainnetHoldersMap, polygonHoldersMap, auroraHoldersMap] = await Promise.all([
+        getHoldersMapping(mainnetContract),
+        getHoldersMapping(polygonContract),
+        getHoldersMapping(auroraContract)
+    ])
 
     const addressSet = getUniqueHoldersList(mainnetHoldersMap, polygonHoldersMap, auroraHoldersMap)
     console.log(addressSet)
     console.log("YOU HAVE", addressSet.size, "UNIQUE TOKEN HOLDERS")
-
-})()
+}
 
 async function getHoldersMapping(contract) {
+    const holders_map = new Map()
+
     // Get all Transfer events
-    let filter = await contract.filters.Transfer()
+    let filter = contract.filters.Transfer()
     let events = await contract.queryFilter(filter)
 
     // need to sort by blockNumber as first precedence
@@ -43,37 +55,32 @@ async function getHoldersMapping(contract) {
         }
     })
 
-    // Create your holdings map
-    const holders_map = new Map()
-
     // Loop through every event
     for (const event of events) {
+        const { from, to, value } = event.args
 
         try {
             // Exclude 0 value transactions
-            if (event.args.value.eq(ZERO)) {
+            if (value.eq(ZERO)) {
                 continue;
             }
 
             // Subtract value from 'from', except if from == zero address
-            if (event.args.from != ZERO_ADDRESS) {
+            if (from != ZERO_ADDRESS) {
                 // If "from" key doesn't exist, create new map entry with value = ZERO
-                const current_holding = holders_map.get(event.args.from) ? holders_map.get(event.args.from) : ZERO
-                holders_map.set(event.args.from, current_holding.sub(event.args.value))
+                const current_from_holding = holders_map.get(from) ? holders_map.get(from) : ZERO
+                holders_map.set(from, current_from_holding.sub(value))
             }
 
             // Add value to 'to'
-            if (holders_map.has(event.args.to)) {
-                const current_holding = holders_map.get(event.args.to)
-                holders_map.set(event.args.to, current_holding.add(event.args.value))
-            } else {
-                holders_map.set(event.args.to, event.args.value)
-            }
-        } catch {
+            const current_to_holding = holders_map.get(to) ? holders_map.get(to) : ZERO
+            holders_map.set(to, current_to_holding.add(value))
+
+        } catch(e) {
             // Catch block for troubleshooting and finding troublesome transactions
             console.log(event)
-            console.log(holders_map.get(event.args.from))
             console.log("------")
+            console.error(e)
         }
     }
 
