@@ -37,6 +37,20 @@ async function main() {
         // getAuroraHoldersMapping(auroraContract)
     ])
 
+    let mainnetTokenholderCount = 0;
+    let polygonTokenholderCount = 0;
+
+    for (const address of mainnetHoldersMap.keys()) {
+        mainnetTokenholderCount += 1
+    }
+
+    for (const address of polygonHoldersMap.keys()) {
+        polygonTokenholderCount += 1
+    }
+
+    console.log("mainnet tokenholders: ", mainnetTokenholderCount)
+    console.log("polygon tokenholders: ", polygonTokenholderCount)
+
     let addressSet = getUniqueHoldersList(mainnetHoldersMap, polygonHoldersMap)
     // const addressSet = getUniqueHoldersList(mainnetHoldersMap, polygonHoldersMap, auroraHoldersMapping)
 
@@ -316,6 +330,7 @@ function getAuroraHoldersMappingAlternate() {
         "0x0ea5d709851ae7a6856677b880b8c56e87e7877b",
         "0x128fbcbea19d753231d9f037a19b13a7e5af2ec9",
         "0x160f1ab6e10e231cc89ba023006eabf20ffadd68",
+        "0x165baa9b6bc744bb5b50076904a743cda18233c8",
         "0x1dada082a88f17c9ca79920ed0d23ce6d73bfe71",
         "0x1eed4b0bc4c8a7201c28640cbc6e7782b38033e0",
         "0x1f464cce5b1d1fc8fe54eb1b2ec3c9f67a55ebba",
@@ -354,23 +369,20 @@ function getAuroraHoldersMappingAlternate() {
         "0x672584379ae3082b25f794e7224057e1b8b3553d",
         "0x6a9d63cbb02b6a7d5d09ce11d0a4b981bb1a221d",
         "0x6cf218ce6539161dc028857c6de14503e685444b",
-        "0x6d62ed9470eb0fcfe2c17493ac32b555be44e2cd",
         "0x76007f7db2e419c3f0445f7d144809a36765617b",
         "0x7a139fc5d92bea22c32dbadc9edfac1f24febb38",
         "0x7c89e30055afbd0f004146baa4bf0708a0d74fcd",
-        "0x81aa5eff3422b61b3ef4143fe7e7b6551ffadce4",
         "0x8553077c859f039cc01c64e9e92943b678c929e9",
         "0x8868a2eae35f1f53d3f8e464c060be9755c8d51c",
         "0x89d0dfb58149fb1ff7471983191f6e0ef5c06dcd",
         "0x8b5d7bb4c21fbbe2a09a8a715e006ea084d0a1a5",
         "0x8c3f353ce0c459d0640be58bd4675e7b478a4e6f",
-        "0x99c5f24e179f3b1d11c35a2a022233b693cc8e31",
         "0x9f45a94158f57fe67a5b3d00f67647d0fe00e180",
         "0x9fcfa92b3184e0888eb0e3ee3663cc2c8750de7e",
+        "0xa043ffeda30e6fd5aa4a6bb31ef770e9af3f4354",
         "0xa356c5f895a0779f5b97093780bd5b8ff097f1be",
         "0xa400f843f0e577716493a3b0b8bc654c6ee8a8a3",
         "0xa969740b3018884cdc10233a506e00851b5d036e",
-        "0xacac1cc989fd26919f26c6fe9a7ee8b3113231b2",
         "0xacfe4511ce883c14c4ea40563f176c3c09b4c47c",
         "0xad7b410c5ae8f2763b3577b21ab91e87e95ff643",
         "0xae94c845fb9a2f4a342db495b542ef81a17fefbe",
@@ -380,6 +392,7 @@ function getAuroraHoldersMappingAlternate() {
         "0xbde8496025017c56e722635d2d65f2fdaa90d7ee",
         "0xc0e6592ce0cb9c552bfc27dddd62821bdfefeaed",
         "0xc591323f04d9b71270b65631694d1d4452cb3f4a",
+        "0xc7119808623e0d8810851070f4536af23d3b9ed5",
         "0xcb8c4416cd10836ff7a35f4b2afd5be0257cc9db",
         "0xcc723efd32e06bd3ef82b0c8a2004285cd0d3866",
         "0xce1e1e2fa55d38495574cbf2001d27d1852109a7",
@@ -390,6 +403,7 @@ function getAuroraHoldersMappingAlternate() {
         "0xddadf88b007b95feb42ddbd110034c9a8e9746f2",
         "0xdf83e7fee9c1fa901768e431b316d92850a6f4e7",
         "0xe2e58503f98b1320d443d4c36fd4ed8b50879add",
+        "0xe53d3f2b99fe0ed6c05977bc0547127836f0d78d",
         "0xe570937e1936be9198f80d6a084e7f36cf72e08c",
         "0xe621b2d01a25ea037e4bb1aef7531a7cdecf90f8",
         "0xe6dc7c97ca7679dde8f96ba4de2aacd6cdde0f50",
@@ -419,6 +433,8 @@ function getAuroraHoldersMappingAlternate() {
             tokenholders.push(ethers.utils.getAddress(address))
         }
     }
+
+    console.log("Aurora tokenholders: " , tokenholders.length)
 
     return tokenholders
 }
